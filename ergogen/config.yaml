@@ -4,6 +4,7 @@ meta:
   creation_date: 20250402
   kb_name: greeny
   version: 1.0
+  url: https://github.com/jSanR/greeny-kb
 units:
   # Proxy Spacing Variables
   kx: cx

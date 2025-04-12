@@ -1,12 +1,12 @@
 # greeny
 
-![greeny](imgur.com image replace me!)
+![greeny](full_outline.svg)
 
 *A custom-made split keyboard with a 4x6 vertically staggered matrix and a 5-key thumb cluster*
 
 * Keyboard Maintainer: [Jesus Sangama](https://github.com/jSanR)
 * Hardware Supported: Sea-Picro (or any RP2040 board with Sparkfun promicro pinout)
-* Hardware Availability: *Links to where you can find this hardware*
+* Hardware Availability: [beekeeb](https://shop.beekeeb.com/) and [aliexpress](https://aliexpress.com/)
 
 Make example for this keyboard (after setting up your build environment):
 
