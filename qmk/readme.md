@@ -17,6 +17,7 @@ Flashing example for this keyboard:
 * Connect one side of the keyboard **(make sure the both sides are not connected)** and enter bootloader mode
 * Wait for the OS to detect the deive. A new drive **RPI-RP2** should appear
 * Flash via cli command (bl parameter depends on the side that is being flashed)
+
 	qmk flash -kb greeny -km default -bl \[uf2-split-left|uf2-split-right\]
 * The drive will dissapear and a few seconds later the keyboard side will be ready for use
 * Repeat the process for the oposite side
