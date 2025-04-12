@@ -1,0 +1,427 @@
+meta:
+  engine: 4.1.0
+  author: jsanr
+  creation_date: 20250402
+  kb_name: greeny
+  version: 1.0
+units:
+  # Proxy Spacing Variables
+  kx: cx
+  ky: cy
+  # Controller Variables (Sea-Picro)
+  conx: 18
+  cony: 35
+  # Padding Variables
+  pad: 4
+  px: kx + pad
+  py: ky + pad
+  pconx: conx + pad
+  pcony: cony + pad
+  # Web preview adjustments
+  $default_width: 1cx
+  $default_height: 1cy
+  # Switch plate size
+  plsize: 13.8
+  # Laptop stand dimensions
+  stand_length: 53.3
+  stand_width: 14.2
+  stand_height: 3.5
+  rubber_feet_height: 2
+  # Case variables
+  case_padding: 1
+  wall_width: 3
+  wall_height: 11
+  base_height: 3.6
+  # Mounting screw variables
+  screw_radius: 1.1 # M2 screw
+  screw_hradius: 2.05
+points:
+  zones:
+    matrix:
+      key:
+        padding: 1ky
+        spread: 1kx
+        tags: ["keys", "def_key"]
+      # Fix placement on KiCAD sheet.
+      anchor:
+        shift: [100, -150]
+      columns:
+        outer:
+          rows.mod.skip: true
+          key.column_net: P21
+        pinky:
+          rows.mod.skip: true
+          key.column_net: P20
+          #key.bind: [2,4,2,2]
+        ring:
+          key:
+            stagger: 10
+            splay: -6
+            spread: 1kx + 1.2
+            column_net: P19
+            #bind: [2,2,2,4]
+          rows.mod.column_net: P20
+        middle:
+          key:
+            stagger: 2.5
+            column_net: P18
+          rows.mod.column_net: P19
+        index:
+          key:
+            stagger: -2.5
+            column_net: P15
+          rows.mod.column_net: P18
+        inner:
+          key:
+            stagger: -2.5
+            column_net: P14
+          rows.mod.skip: true
+      rows:
+        mod:
+          row_net: P9
+        bottom:
+          row_net: P8
+        home:
+          row_net: P7
+        top:
+          row_net: P10
+        numbers:
+          row_net: P16
+    thumb:
+      key:
+        padding: 1ky
+        spread: 1kx
+        tags: ["keys", "def_key"]
+      anchor:
+        ref: matrix_inner_mod
+        shift: [1.5, -2.5]
+      columns:
+        layer:
+          key:
+            splay: -10
+            column_net: P15
+        space:
+          key:
+            width: 1.5kx
+            splay: 80
+            shift: [2,-3]
+            column_net: P14
+            tags:
+              keys: true
+              def_key: false
+              alt_key: true
+      rows:
+        cluster:
+          row_net: P9
+    controller:
+      key:
+        width: 1conx
+        height: 1cony
+        tags: ["controller"]
+      anchor:
+        ref: matrix_inner_top
+        shift: [1kx + 5,0.5ky -1]
+      columns:
+        col:
+      rows:
+        row:
+outlines:
+  raw:
+    - what: rectangle
+      where: true
+      size: [px, py]
+  # Preview of the keycaps to check for overlaps
+  keys:
+    - what: rectangle
+      where: "def_key"
+      size: [kx-0.5,ky-0.5]
+    - what: rectangle
+      where: "alt_key"
+      size: [1.5kx-0.5,ky-0.5]
+  # Preview of the switches for the board plate
+  switches:
+    - what: rectangle
+      where: "keys"
+      size: [plsize,plsize]
+  # Preview of the controller
+  controller:
+    - what: rectangle
+      where: "controller"
+      size: [conx - 0.5,cony -0.5]
+  # Polygon that defines the shape of the board
+  board:
+    - what: polygon
+      operation: stack
+      points:
+        - ref: matrix_outer_numbers
+          shift: [-0.5px,0.5py]
+        - ref: matrix_ring_numbers
+          shift: [-0.5px,0.5py]
+        - ref: matrix_middle_numbers
+          shift: [-0.5px,0.5py]
+        - ref: matrix_middle_numbers
+          shift: [0.5px,0.5py]
+        - ref: matrix_inner_numbers
+          shift: [0.5px,0.5py]
+        - ref: controller_col_row
+          shift: [0.5pconx,0.5pcony]
+        - ref: thumb_space_cluster
+          shift: [0.75px,-0.5py]
+        - ref: thumb_space_cluster
+          shift: [-0.75px,-0.5py]
+        - ref: thumb_layer_cluster
+          shift: [-0.5px,-0.5py]
+        - ref: matrix_outer_bottom
+          shift: [-0.5px,-0.5py]
+      fillet: 2
+  # Outline based on board to represent case inner walls
+  case_inner:
+    - what: outline
+      name: board
+      expand: case_padding
+      joints: round
+  # Outline based on board to represent case area
+  case_area:
+    - what: outline
+      name: board
+      expand: case_padding + wall_width
+      joints: round
+  # Combination of the board and keys
+  base_kb:
+    - name: board
+    - operation: stack
+      name: keys
+    - operation: stack
+      name: controller
+  # Outline showing the position of stands
+  stands:
+    - what: rectangle
+      where:
+        ref: "matrix_inner_numbers"
+        shift: [10,2]
+      size: [stand_length + 8, stand_width + 2]
+      fillet: 1
+    - what: rectangle
+      where:
+        ref: "thumb_layer_cluster"
+        shift: [6.2,-3.5]
+        rotate: -10
+      size: [stand_length + 8, stand_width + 2]
+      fillet: 1
+  # Generic outline for mounting holes
+  holes:
+    top_left:
+      what: circle
+      where:
+        ref: "matrix_outer_numbers"
+        shift: [0.5kx, -0.3ky]
+      radius: hole_radius
+    bot_left:
+      what: circle
+      where:
+        ref: "matrix_outer_bottom"
+        shift: [0.5kx, -0.3ky]
+      radius: hole_radius
+    top_right:
+      what: circle
+      where:
+        ref: "matrix_index_numbers"
+        shift: [-0.5kx, -0.1ky]
+      radius: hole_radius 
+    bot_mid:
+      what: circle
+      where:
+        ref: "matrix_middle_mod"
+        shift: [0.5kx, -0.45ky]
+      radius: hole_radius
+    bot_right:
+      what: circle
+      where:
+        ref: "matrix_inner_bottom"
+        shift: [1kx, -0.4ky]
+      radius: hole_radius 
+    $params: [hole_radius]
+  # Actual outline of mounting holes
+  screw_holes:
+    $extends: outlines.holes
+    $args: [screw_radius]
+  # Outline of mounting screw heads
+  screw_heads:
+    $extends: outlines.holes
+    $args: [screw_hradius]
+  # Outline showing the complete case base
+  case_base:
+    - what: outline
+      name: case_area
+    - what: outline
+      name: stands
+      operation: stack
+    - what: outline
+      name: screw_holes
+      operation: stack
+    - what: outline
+      name: screw_heads
+      operation: stack
+  # Outline of case walls
+  walls:
+    - name: case_area
+    - operation: subtract
+      name: case_inner
+  # Polygon that defines the shape of the plate
+  plate_area:
+    - what: polygon
+      operation: stack
+      points:
+        - ref: matrix_outer_numbers
+          shift: [-0.5px,0.5py]
+        - ref: matrix_ring_numbers
+          shift: [-0.5px,0.5py]
+        - ref: matrix_middle_numbers
+          shift: [-0.5px,0.5py]
+        - ref: matrix_middle_numbers
+          shift: [0.5px,0.5py]
+        - ref: matrix_inner_numbers
+          shift: [0.5px,0.5py]
+        - ref: matrix_inner_bottom
+          shift: [0.5px,0]
+        - ref: thumb_space_cluster
+          shift: [0.75px,-0.5py]
+        - ref: thumb_space_cluster
+          shift: [-0.75px,-0.5py]
+        - ref: thumb_layer_cluster
+          shift: [-0.5px,-0.5py]
+        - ref: matrix_outer_bottom
+          shift: [-0.5px,-0.5py]
+      fillet: 2
+  # Plate with switch and mounting holes
+  plate:
+    - name: plate_area
+    - operation: subtract
+      name: switches
+    - operation: subtract
+      name: screw_holes
+  # Plate considering screw heads
+  plate_w_screwh:
+    - name: plate_area
+    - operation: subtract
+      name: switches
+    - operation: stack
+      name: screw_holes
+    - operation: stack
+      name: screw_heads
+  # Combination of base keyboard, case and plate
+  full_kb:
+    - name: case_area
+    - operation: stack
+      name: case_inner
+    - operation: stack
+      name: base_kb
+    - operation: stack
+      name: plate_area
+pcbs:
+  greeny:
+    outlines:
+      main:
+        outline: board
+      keycaps:
+        outline: keys
+        layer: Eco1.User
+    footprints:
+      choc_hotswap:
+        what: infused-kim/choc
+        where: "keys"
+        params:
+          show_keycaps: true
+          reverse: true
+          hotswap: true
+          from: "{{column_net}}"
+          to: "{{colrow}}"
+      diode:
+        what: diode
+        where: "keys"
+        params:
+          from: "{{colrow}}"
+          to: "{{row_net}}"
+        adjust:
+          shift: [0, -5]
+      controller:
+        what: promicro
+        params:
+          orientation: "down"
+        where:
+          ref: "controller_col_row"
+          shift: [0,0]
+          rotate: -90
+      trrs:
+        what: ceoloide/trrs_pj320a
+        params:
+          reversible: true
+          symmetric: true
+          TP: GND
+          R1: GND
+          R2: P1
+          SL: VCC
+        where:
+          ref: "controller_col_row"
+          shift: [0.5conx + 5,-1pcony + 1]
+          rotate: -86.5
+      reset:
+        what: tht_switch
+        params:
+          reversible: true
+          from: GND
+          to: RST
+        where:
+          ref: "controller_col_row"
+          shift: [0.5conx - 8,-0.5pcony - 5]
+          rotate: 4.5
+      hole_top_left:
+        what: ceoloide/mounting_hole_npth
+        where:
+          ref: "matrix_outer_numbers"
+          shift: [0.5kx, -0.3ky]
+      hole_bot_left:
+        what: ceoloide/mounting_hole_npth
+        where:
+          ref: "matrix_outer_bottom"
+          shift: [0.5kx, -0.3ky]
+      hole_top_right:
+        what: ceoloide/mounting_hole_npth
+        where:
+          ref: "matrix_index_numbers"
+          shift: [-0.5kx, -0.1ky]
+      hole_bot_mid:
+        what: ceoloide/mounting_hole_npth
+        where:
+          ref: "matrix_middle_mod"
+          shift: [0.5kx, -0.45ky]
+      hole_bot_right:
+        what: ceoloide/mounting_hole_npth
+        where:
+          ref: "matrix_inner_bottom"
+          shift: [1kx, -0.4ky]
+cases:
+  plate:
+    - name: plate
+      extrude: 1.2
+  _stands:
+    - name: stands
+      extrude: stand_height - rubber_feet_height
+  _mounting_holes:
+    - name: screw_holes
+      extrude: base_height + 1
+    - name: screw_heads
+      extrude: 1.5
+  case:
+    - name: case_area
+      extrude: base_height
+    - name: walls
+      extrude: base_height + wall_height
+    - what: case
+      name: _stands
+      operation: subtract
+    - what: case
+      name: _mounting_holes
+      operation: subtract
+
+  
