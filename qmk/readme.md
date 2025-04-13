@@ -19,10 +19,10 @@ Flashing example for this keyboard:
 * Flash via cli command (bl parameter depends on the side that is being flashed)
 
 	```
-	qmk flash -kb greeny -km default -bl \[uf2-split-left|uf2-split-right\]
+	qmk flash -kb greeny -km default -bl [uf2-split-left|uf2-split-right]
 	```
 * The drive will dissapear and a few seconds later the keyboard side will be ready for use
-* Repeat the process for the oposite side
+* Repeat the process for the opposite side
 
 
 See the [build environment setup](https://docs.qmk.fm/#/getting_started_build_tools) and the [make instructions](https://docs.qmk.fm/#/getting_started_make_guide) for more information. Brand new to QMK? Start with our [Complete Newbs Guide](https://docs.qmk.fm/#/newbs).
