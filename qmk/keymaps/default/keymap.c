@@ -4,13 +4,6 @@
 #include QMK_KEYBOARD_H
 #include "keymap_spanish_latin_america.h"
 
-enum layers {
-	_BA, // base
-	_GO, // games override
-	_NV, // navigation
-	_SY, // symbols
-};
-
 // Home row mods config
 #define HR_SCTL LCTL_T(KC_S)
 #define HR_DGUI LGUI_T(KC_D)
@@ -23,6 +16,93 @@ enum layers {
 // Custom combos
 #define BR_PTAB RCS(KC_TAB)
 #define BR_NTAB C(KC_TAB)
+
+// Tap Dance declarations
+enum {
+    D_A,
+    D_E,
+    D_I,
+    D_O,
+    D_U,
+};
+
+// Tap dance functions
+void tap_dance_a(tap_dance_state_t *state, void *user_data) {
+	switch (state->count) {
+		case 1:
+			tap_code(KC_A);
+			break;
+		case 2:
+			tap_code(ES_ACUT);
+			tap_code(KC_A);
+			break;
+	}
+};
+
+void tap_dance_e(tap_dance_state_t *state, void *user_data) {
+	switch (state->count) {
+		case 1:
+			tap_code(KC_E);
+			break;
+		case 2:
+			tap_code(ES_ACUT);
+			tap_code(KC_E);
+			break;
+	}
+};
+
+void tap_dance_i(tap_dance_state_t *state, void *user_data) {
+	switch (state->count) {
+		case 1:
+			tap_code(KC_I);
+			break;
+		case 2:
+			tap_code(ES_ACUT);
+			tap_code(KC_I);
+			break;
+	}
+};
+
+void tap_dance_o(tap_dance_state_t *state, void *user_data) {
+	switch (state->count) {
+		case 1:
+			tap_code(KC_O);
+			break;
+		case 2:
+			tap_code(ES_ACUT);
+			tap_code(KC_O);
+			break;
+	}
+};
+
+void tap_dance_u(tap_dance_state_t *state, void *user_data) {
+	switch (state->count) {
+		case 1:
+			tap_code(KC_U);
+			break;
+		case 2:
+			tap_code(ES_ACUT);
+			tap_code(KC_U);
+			break;
+	}
+};
+
+// Tap Dance definitions
+tap_dance_action_t tap_dance_actions[] = {
+    // Tap once for Escape, twice for Caps Lock
+    [D_A] = ACTION_TAP_DANCE_FN(tap_dance_a),
+    [D_E] = ACTION_TAP_DANCE_FN(tap_dance_e),
+    [D_I] = ACTION_TAP_DANCE_FN(tap_dance_i),
+    [D_O] = ACTION_TAP_DANCE_FN(tap_dance_o),
+    [D_U] = ACTION_TAP_DANCE_FN(tap_dance_u),
+};
+
+enum layers {
+	_BA, // base
+	_GO, // games override
+	_NV, // navigation
+	_SY, // symbols
+};
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     /*
@@ -44,9 +124,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // ,-----------------------------------------------.				   ,-----------------------------------------------.
         QK_GESC,KC_1,	KC_2,	KC_3,	KC_4,	KC_5,						KC_6,	KC_7,	KC_8,	KC_9,	KC_0,	KC_DEL,
     // |-------+-------+-------+-------+-------+-------|				   |-------+-------+-------+-------+-------+-------|
-        KC_TAB,	KC_Q,	KC_W,	KC_E,	KC_R,	KC_T,						KC_Y,	KC_U,	KC_I,	KC_O,	KC_P,	ES_ACUT,
+        KC_TAB,	KC_Q,	KC_W,	TD(D_E),KC_R,	KC_T,						KC_Y,	TD(D_U),TD(D_I),TD(D_O),KC_P,	ES_ACUT,
     // |-------+-------+-------+-------+-------+-------|				   |-------+-------+-------+-------+-------+-------|
-        SC_LSPO,KC_A,	HR_SCTL,HR_DGUI,HR_FALT,KC_G,						KC_H,	HR_JALT,HR_KGUI,HR_LCTL,ES_NTIL,SC_RSPC,
+        SC_LSPO,TD(D_A),HR_SCTL,HR_DGUI,HR_FALT,KC_G,						KC_H,	HR_JALT,HR_KGUI,HR_LCTL,ES_NTIL,SC_RSPC,
     // |-------+-------+-------+-------+-------+-------|				   |-------+-------+-------+-------+-------+-------|
         KC_LCTL,KC_Z,	KC_X,	KC_C,	KC_V,	KC_B,						KC_N,	KC_M,	KC_COMM,KC_DOT,	ES_MINS,ES_LCBR,
     // `---------------+-------+-------+-------+-------+---------. ,-------+-------+-------+-------+-------+---------------´
