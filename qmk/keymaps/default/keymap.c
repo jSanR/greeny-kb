@@ -9,7 +9,7 @@
 #define HR_DGUI LGUI_T(KC_D)
 #define HR_FALT LALT_T(KC_F)
 
-#define HR_JALT RALT_T(KC_J)
+#define HR_JALT LALT_T(KC_J)
 #define HR_KGUI RGUI_T(KC_K)
 #define HR_LCTL RCTL_T(KC_L)
 
@@ -27,64 +27,38 @@ enum {
 };
 
 // Tap dance functions
-void tap_dance_a(tap_dance_state_t *state, void *user_data) {
+
+// Generic function for accented vowels on double tap
+void tap_dance_accent_vowel(tap_dance_state_t *state, void *user_data, uint16_t kc) {
 	switch (state->count) {
 		case 1:
-			tap_code(KC_A);
+			tap_code(kc);
 			break;
 		case 2:
 			tap_code(ES_ACUT);
-			tap_code(KC_A);
+			tap_code(kc);
 			break;
-	}
+	}	
+};
+
+void tap_dance_a(tap_dance_state_t *state, void *user_data) {
+	tap_dance_accent_vowel(state, user_data, KC_A);
 };
 
 void tap_dance_e(tap_dance_state_t *state, void *user_data) {
-	switch (state->count) {
-		case 1:
-			tap_code(KC_E);
-			break;
-		case 2:
-			tap_code(ES_ACUT);
-			tap_code(KC_E);
-			break;
-	}
+	tap_dance_accent_vowel(state, user_data, KC_E);
 };
 
 void tap_dance_i(tap_dance_state_t *state, void *user_data) {
-	switch (state->count) {
-		case 1:
-			tap_code(KC_I);
-			break;
-		case 2:
-			tap_code(ES_ACUT);
-			tap_code(KC_I);
-			break;
-	}
+	tap_dance_accent_vowel(state, user_data, KC_I);
 };
 
 void tap_dance_o(tap_dance_state_t *state, void *user_data) {
-	switch (state->count) {
-		case 1:
-			tap_code(KC_O);
-			break;
-		case 2:
-			tap_code(ES_ACUT);
-			tap_code(KC_O);
-			break;
-	}
+	tap_dance_accent_vowel(state, user_data, KC_O);
 };
 
 void tap_dance_u(tap_dance_state_t *state, void *user_data) {
-	switch (state->count) {
-		case 1:
-			tap_code(KC_U);
-			break;
-		case 2:
-			tap_code(ES_ACUT);
-			tap_code(KC_U);
-			break;
-	}
+	tap_dance_accent_vowel(state, user_data, KC_U);
 };
 
 // Tap Dance definitions
@@ -122,7 +96,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      */  
     [_BA] = LAYOUT(
     // ,-----------------------------------------------.				   ,-----------------------------------------------.
-        QK_GESC,KC_1,	KC_2,	KC_3,	KC_4,	KC_5,						KC_6,	KC_7,	KC_8,	KC_9,	KC_0,	KC_DEL,
+        KC_ESC,	KC_1,	KC_2,	KC_3,	KC_4,	KC_5,						KC_6,	KC_7,	KC_8,	KC_9,	KC_0,	KC_DEL,
     // |-------+-------+-------+-------+-------+-------|				   |-------+-------+-------+-------+-------+-------|
         KC_TAB,	KC_Q,	KC_W,	TD(D_E),KC_R,	KC_T,						KC_Y,	TD(D_U),TD(D_I),TD(D_O),KC_P,	ES_ACUT,
     // |-------+-------+-------+-------+-------+-------|				   |-------+-------+-------+-------+-------+-------|
