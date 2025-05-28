@@ -26,6 +26,33 @@ enum {
     D_U,
 };
 
+// Caps word config (work with vowel tap dances)
+bool caps_word_press_user(uint16_t keycode) {
+    switch (keycode) {
+        // Keycodes that continue Caps Word, with shift applied.
+        case KC_A ... KC_Z:
+        case KC_MINS:
+        case ES_MINS:
+        case TD(D_A):
+        case TD(D_E):
+        case TD(D_I):
+        case TD(D_O):
+        case TD(D_U):
+            add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key.
+            return true;
+
+        // Keycodes that continue Caps Word, without shifting.
+        case KC_1 ... KC_0:
+        case KC_BSPC:
+        case KC_DEL:
+        case KC_UNDS:
+            return true;
+
+        default:
+            return false;  // Deactivate Caps Word.
+    }
+}
+
 // Tap dance functions
 
 // Generic function for accented vowels on double tap
@@ -63,7 +90,6 @@ void tap_dance_u(tap_dance_state_t *state, void *user_data) {
 
 // Tap Dance definitions
 tap_dance_action_t tap_dance_actions[] = {
-    // Tap once for Escape, twice for Caps Lock
     [D_A] = ACTION_TAP_DANCE_FN(tap_dance_a),
     [D_E] = ACTION_TAP_DANCE_FN(tap_dance_e),
     [D_I] = ACTION_TAP_DANCE_FN(tap_dance_i),
@@ -76,6 +102,12 @@ enum layers {
 	_GO, // games override
 	_NV, // navigation
 	_SY, // symbols
+};
+
+// Combo definitions
+const uint16_t PROGMEM combo_alt_sym_layer[] = {KC_ENT, KC_SPC, COMBO_END};
+combo_t key_combos[] = {
+    COMBO(combo_alt_sym_layer, MO(_SY)),
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
