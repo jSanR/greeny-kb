@@ -55,6 +55,32 @@ bool caps_word_press_user(uint16_t keycode) {
 
 // Tap dance functions
 
+void clear_shift_mods(uint8_t mods_state, uint8_t weak_mods_state) {
+	bool lshift_pressed = mods_state & (MOD_BIT(KC_LSFT));
+	bool rshift_pressed = mods_state & (MOD_BIT(KC_RSFT));
+
+	if(lshift_pressed) {unregister_code(KC_LSFT);}
+
+	if(rshift_pressed) {unregister_code(KC_RSFT);} 
+
+	if (weak_mods_state & MOD_MASK_SHIFT) {
+		clear_weak_mods();
+	}
+};
+
+void restore_shift_mods(uint8_t mods_state, uint8_t weak_mods_state) {
+	bool lshift_pressed = mods_state & (MOD_BIT(KC_LSFT));
+	bool rshift_pressed = mods_state & (MOD_BIT(KC_RSFT));
+
+	if(lshift_pressed) {register_code(KC_LSFT);}
+
+	if(rshift_pressed) {register_code(KC_RSFT);} 
+	
+	if (weak_mods_state & MOD_MASK_SHIFT) {
+		add_weak_mods(MOD_BIT(KC_LSFT));
+	}
+};
+
 // Generic function for accented vowels on double tap
 void tap_dance_accent_vowel(tap_dance_state_t *state, void *user_data, uint16_t kc) {
 	switch (state->count) {
@@ -62,7 +88,13 @@ void tap_dance_accent_vowel(tap_dance_state_t *state, void *user_data, uint16_t 
 			tap_code(kc);
 			break;
 		case 2:
+			uint8_t mods_state = get_mods();
+			uint8_t weak_mods_state = get_weak_mods();
+
+			clear_shift_mods(mods_state, weak_mods_state);
 			tap_code(ES_ACUT);
+			restore_shift_mods(mods_state, weak_mods_state);
+			
 			tap_code(kc);
 			break;
 	}	
