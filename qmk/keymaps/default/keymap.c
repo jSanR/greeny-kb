@@ -136,6 +136,8 @@ enum layers {
 	_SY, // symbols
 };
 
+#define SY_ENT LT(_SY, KC_ENT)
+
 // Combo definitions
 const uint16_t PROGMEM combo_alt_sym_layer[] = {KC_ENT, KC_SPC, COMBO_END};
 combo_t key_combos[] = {
@@ -168,7 +170,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // |-------+-------+-------+-------+-------+-------|				   |-------+-------+-------+-------+-------+-------|
         KC_LCTL,KC_Z,	KC_X,	KC_C,	KC_V,	KC_B,						KC_N,	KC_M,	KC_COMM,KC_DOT,	ES_MINS,ES_LCBR,
     // `---------------+-------+-------+-------+-------+---------. ,-------+-------+-------+-------+-------+---------------´
-    					KC_LCTL,XXXXXXX,KC_LALT,MO(_NV),KC_SPC,		KC_ENT,	KC_BSPC,MO(_SY),KC_HOME,KC_END
+    					KC_LCTL,XXXXXXX,KC_LALT,MO(_NV),KC_SPC,		SY_ENT,	KC_BSPC,MO(_SY),KC_HOME,KC_END
     //				   `-----------------------------------------´ `---------------------------------------´
     ),  
     [_GO] = LAYOUT(
