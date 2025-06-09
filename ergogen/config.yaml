@@ -33,6 +33,12 @@ units:
   wall_width: 3
   wall_height: 11
   base_height: 3.6
+  # Case cover cariables
+  cover_wall_width: 1.2
+  cover_wall_spacing: 0.4
+  cover_base_height: 2
+  cover_wide_wall_height: 6.5
+  cover_thin_wall_height: wall_height/2
   # Mounting screw variables
   screw_radius: 1.1 # M2 screw
   screw_hradius: 2.05
@@ -319,6 +325,44 @@ outlines:
       name: base_kb
     - operation: stack
       name: plate_area
+  # Outline based on board to represent case area
+  cover_area:
+    - what: outline
+      name: case_area
+      expand: cover_wall_width + cover_wall_spacing
+      joints: round
+  # Represents the inner part of the cover's wide wall section
+  cover_wide_wall_inner:
+    - what: outline
+      name: board
+      expand: case_padding + wall_width/2
+      joints: round
+  # Represents the inner part of the cover's thin wall section
+  cover_thin_wall_inner:
+    - what: outline
+      name: case_area
+      expand: cover_wall_spacing
+      joints: round
+  cover_wide_wall:
+    - name: cover_area
+    - operation: subtract
+      name: cover_wide_wall_inner
+  cover_thin_wall:
+    - name: cover_area
+    - operation: subtract
+      name: cover_thin_wall_inner
+  full_cover:
+    - name: cover_area
+    - operation: stack
+      name: cover_wide_wall_inner
+    - operation: stack
+      name: cover_thin_wall_inner
+  case_against_cover:
+    - name: full_cover
+    - operation: stack
+      name: case_area
+    - operation: stack
+      name: case_inner
 pcbs:
   greeny:
     outlines:
@@ -424,5 +468,10 @@ cases:
     - what: case
       name: _mounting_holes
       operation: subtract
-
-  
+  cover:
+    - name: cover_area
+      extrude: cover_base_height
+    - name: cover_wide_wall
+      extrude: cover_base_height + cover_wide_wall_height
+    - name: cover_thin_wall
+      extrude: cover_base_height + cover_wide_wall_height + cover_thin_wall_height
