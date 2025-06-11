@@ -85,9 +85,10 @@ void restore_shift_mods(uint8_t mods_state, uint8_t weak_mods_state) {
 void tap_dance_accent_vowel(tap_dance_state_t *state, void *user_data, uint16_t kc) {
 	switch (state->count) {
 		case 1:
-			tap_code(kc);
+			register_code(kc);
 			break;
 		case 2:
+		default:
 			uint8_t mods_state = get_mods();
 			uint8_t weak_mods_state = get_weak_mods();
 
@@ -95,38 +96,59 @@ void tap_dance_accent_vowel(tap_dance_state_t *state, void *user_data, uint16_t 
 			tap_code(ES_ACUT);
 			restore_shift_mods(mods_state, weak_mods_state);
 			
-			tap_code(kc);
+			register_code(kc);
 			break;
 	}	
 };
 
-void tap_dance_a(tap_dance_state_t *state, void *user_data) {
+void tap_dance_finished_a(tap_dance_state_t *state, void *user_data) {
 	tap_dance_accent_vowel(state, user_data, KC_A);
 };
 
-void tap_dance_e(tap_dance_state_t *state, void *user_data) {
+void tap_dance_finished_e(tap_dance_state_t *state, void *user_data) {
 	tap_dance_accent_vowel(state, user_data, KC_E);
 };
 
-void tap_dance_i(tap_dance_state_t *state, void *user_data) {
+void tap_dance_finished_i(tap_dance_state_t *state, void *user_data) {
 	tap_dance_accent_vowel(state, user_data, KC_I);
 };
 
-void tap_dance_o(tap_dance_state_t *state, void *user_data) {
+void tap_dance_finished_o(tap_dance_state_t *state, void *user_data) {
 	tap_dance_accent_vowel(state, user_data, KC_O);
 };
 
-void tap_dance_u(tap_dance_state_t *state, void *user_data) {
+void tap_dance_finished_u(tap_dance_state_t *state, void *user_data) {
 	tap_dance_accent_vowel(state, user_data, KC_U);
+};
+
+
+void tap_dance_reset_a(tap_dance_state_t *state, void *user_data) {
+	unregister_code(KC_A);
+};
+
+void tap_dance_reset_e(tap_dance_state_t *state, void *user_data) {
+	unregister_code(KC_E);
+};
+
+void tap_dance_reset_i(tap_dance_state_t *state, void *user_data) {
+	unregister_code(KC_I);
+};
+
+void tap_dance_reset_o(tap_dance_state_t *state, void *user_data) {
+	unregister_code(KC_O);
+};
+
+void tap_dance_reset_u(tap_dance_state_t *state, void *user_data) {
+	unregister_code(KC_U);
 };
 
 // Tap Dance definitions
 tap_dance_action_t tap_dance_actions[] = {
-    [D_A] = ACTION_TAP_DANCE_FN(tap_dance_a),
-    [D_E] = ACTION_TAP_DANCE_FN(tap_dance_e),
-    [D_I] = ACTION_TAP_DANCE_FN(tap_dance_i),
-    [D_O] = ACTION_TAP_DANCE_FN(tap_dance_o),
-    [D_U] = ACTION_TAP_DANCE_FN(tap_dance_u),
+    [D_A] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tap_dance_finished_a, tap_dance_reset_a),
+    [D_E] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tap_dance_finished_e, tap_dance_reset_e),
+    [D_I] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tap_dance_finished_i, tap_dance_reset_i),
+    [D_O] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tap_dance_finished_o, tap_dance_reset_o),
+    [D_U] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tap_dance_finished_u, tap_dance_reset_u),
 };
 
 enum layers {
@@ -177,9 +199,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     // ,-----------------------------------------------.				   ,-----------------------------------------------.
         _______,_______,_______,_______,_______,_______,					_______,_______,_______,_______,_______,_______,
     // |-------+-------+-------+-------+-------+-------|				   |-------+-------+-------+-------+-------+-------|
-        _______,_______,_______,_______,_______,_______,					_______,_______,_______,_______,_______,_______,
+        _______,_______,_______,KC_E,	_______,_______,					_______,KC_U,	KC_I,	KC_O,	_______,_______,
     // |-------+-------+-------+-------+-------+-------|				   |-------+-------+-------+-------+-------+-------|
-        _______,_______,KC_S,	KC_D,	KC_F,	_______,					_______,_______,_______,_______,_______,_______,
+        _______,KC_A,	KC_S,	KC_D,	KC_F,	_______,					_______,_______,_______,_______,_______,_______,
     // |-------+-------+-------+-------+-------+-------|				   |-------+-------+-------+-------+-------+-------|
         _______,_______,_______,_______,_______,_______,					_______,_______,_______,_______,_______,_______,
     // `---------------+-------+-------+-------+-------+---------. ,-------+-------+-------+-------+-------+---------------´
