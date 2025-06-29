@@ -251,6 +251,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),    
 };
 
+/*
 // Debug matrix position of keypresses
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   // If console is enabled, it will print the matrix position and status of each key pressed
@@ -267,4 +268,19 @@ void keyboard_post_init_user(void) {
   //debug_matrix=true;
   //debug_keyboard=true;
   //debug_mouse=true;
+}
+
+*/
+
+// Layer change custom processing
+layer_state_t layer_state_set_user(layer_state_t state) {
+	if (IS_LAYER_ON_STATE(state, _GO)) {
+		autoshift_disable();
+	} else {
+		if (!get_autoshift_state()) {
+			autoshift_enable();
+		}
+	}
+
+	return state;
 }
