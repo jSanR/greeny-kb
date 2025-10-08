@@ -151,6 +151,21 @@ tap_dance_action_t tap_dance_actions[] = {
     [D_U] = ACTION_TAP_DANCE_FN_ADVANCED(NULL, tap_dance_finished_u, tap_dance_reset_u),
 };
 
+// Auto shift customizations
+bool get_custom_auto_shifted_key(uint16_t keycode, keyrecord_t *record) {
+    switch(keycode) {
+        case HR_SCTL:
+        case HR_DGUI:
+        case HR_FALT:
+        case HR_JALT:
+        case HR_KGUI:
+        case HR_LCTL:
+            return true;
+        default:
+            return false;
+    }
+}
+
 enum layers {
 	_BA, // base
 	_GO, // games override
@@ -159,11 +174,15 @@ enum layers {
 };
 
 #define SY_ENT LT(_SY, KC_ENT)
+#define GS_ENT RSG(KC_ENT)
 
 // Combo definitions
 const uint16_t PROGMEM combo_alt_sym_layer[] = {KC_ENT, KC_SPC, COMBO_END};
+const uint16_t PROGMEM combo_homerow_term[] = {HR_JALT, HR_KGUI, HR_LCTL, COMBO_END};
+
 combo_t key_combos[] = {
     COMBO(combo_alt_sym_layer, MO(_SY)),
+    COMBO(combo_homerow_term, RSG(KC_ENT)),
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -181,7 +200,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
      *            | LCTL | LGUI | LALT | NAV  | /Space  /       \Enter \  | Bspc | SYMB | HOME | END  |
      *            |      |      |      |      |/       /         \      \ |      |      |      |      |
      *            `----------------------------------'           '------''---------------------------'
-     */  
+     */
     [_BA] = LAYOUT(
     // ,-----------------------------------------------.				   ,-----------------------------------------------.
         KC_ESC,	KC_1,	KC_2,	KC_3,	KC_4,	KC_5,						KC_6,	KC_7,	KC_8,	KC_9,	KC_0,	KC_DEL,
