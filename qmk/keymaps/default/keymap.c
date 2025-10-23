@@ -55,6 +55,34 @@ bool caps_word_press_user(uint16_t keycode) {
 
 // Tap dance functions
 
+typedef enum {
+    TD_NONE,
+    TD_UNKNOWN,
+    TD_SINGLE_TAP,
+    TD_SINGLE_HOLD,
+    TD_DOUBLE_TAP,
+    TD_DOUBLE_HOLD,
+    TD_DOUBLE_SINGLE_TAP, // Send two single taps
+} td_state_t;
+
+// See https://docs.qmk.fm/features/tap_dance#examples for explanation
+td_state_t cur_dance_state(tap_dance_state_t *state) {
+    if (state->count == 1) {
+        if (state->interrupted || !state->pressed) return TD_SINGLE_TAP;
+        // Key has not been interrupted, but the key is still held. Means you want to send a 'HOLD'.
+        else return TD_SINGLE_HOLD;
+    } else if (state->count == 2) {
+        // TD_DOUBLE_SINGLE_TAP is to distinguish between typing "pepper", and actually wanting a double tap
+        // action when hitting 'pp'. Suggested use case for this return value is when you want to send two
+        // keystrokes of the key, and not the 'double tap' action/macro.
+        if (state->interrupted) return TD_DOUBLE_SINGLE_TAP;
+        else if (state->pressed) return TD_DOUBLE_HOLD;
+        else return TD_DOUBLE_TAP;
+    }
+
+	return TD_UNKNOWN;
+}
+
 void clear_shift_mods(uint8_t mods_state, uint8_t weak_mods_state) {
 	bool lshift_pressed = mods_state & (MOD_BIT(KC_LSFT));
 	bool rshift_pressed = mods_state & (MOD_BIT(KC_RSFT));
@@ -83,20 +111,38 @@ void restore_shift_mods(uint8_t mods_state, uint8_t weak_mods_state) {
 
 // Generic function for accented vowels on double tap
 void tap_dance_accent_vowel(tap_dance_state_t *state, void *user_data, uint16_t kc) {
-	switch (state->count) {
-		case 1:
-			register_code(kc);
-			break;
-		case 2:
-		default:
-			uint8_t mods_state = get_mods();
-			uint8_t weak_mods_state = get_weak_mods();
+	td_state_t td_final_state = cur_dance_state(state);
 
+	uint8_t mods_state = get_mods();
+	uint8_t weak_mods_state = get_weak_mods();
+
+	switch (td_final_state) {
+		case TD_SINGLE_TAP: // Simple key tap
+			tap_code(kc);
+			
+			break;
+		case TD_SINGLE_HOLD: // Shifted Key tap
+			add_weak_mods(MOD_BIT(KC_LSFT));
+			tap_code(kc);
+			restore_shift_mods(mods_state, weak_mods_state);
+
+			break;
+		case TD_DOUBLE_SINGLE_TAP: // Double key tap for fast typing ("pepper", "seen", etc.)
+			tap_code(kc);
+			register_code(kc);
+
+			break;
+		case TD_DOUBLE_HOLD: // Simple key hold
+			register_code(kc);
+
+			break;	
+		case TD_DOUBLE_TAP: // Accented key tap
+		default:
 			clear_shift_mods(mods_state, weak_mods_state);
 			tap_code(ES_ACUT);
 			restore_shift_mods(mods_state, weak_mods_state);
 			
-			register_code(kc);
+			tap_code(kc);
 			break;
 	}	
 };
